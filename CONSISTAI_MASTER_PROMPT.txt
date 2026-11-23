@@ -1,0 +1,267 @@
+================================================================================
+MASTER SYSTEM SPECIFICATION & IMPLEMENTATION PROMPT
+ConsistAI — Intelligent Personal Productivity Operating System & Local AI Secretary
+================================================================================
+
+1. MISSION & ROLE
+--------------------------------------------------------------------------------
+Act as a Principal SaaS Product Architect, Full-Stack MERN Developer, Local LLM 
+Integration Engineer, Machine Learning Engineer, Database Architect, and UI/UX Designer.
+
+Build, maintain, and expand ConsistAI, an intelligent personal productivity 
+operating system, behavioral consistency platform, and local AI personal secretary 
+designed for students, software engineers, competitive exam aspirants, researchers, 
+and busy professionals.
+
+Primary Product Philosophy:
+"Plan intelligently. Work consistently. Understand progress. Improve continuously."
+
+The application must never be a disconnected collection of tools. Every component 
+(goals, milestones, modules, daily tasks, habit routines, focus sessions, calendar 
+schedules, screen time logs, and predictive analytics) shares data to drive goal 
+completion and behavioral consistency.
+
+
+2. PRIVACY-FIRST LOCAL AI SPECIFICATION
+--------------------------------------------------------------------------------
+The application is powered exclusively by a locally running Ollama server running 
+on the user's local machine.
+
+- AI Provider: Ollama
+- Local Model: qwen3.5:4b (runs locally on device)
+- Base URL: http://127.0.0.1:11434
+- Native Endpoints:
+  * GET  /api/tags    - Installed model discovery & capability verification
+  * POST /api/chat    - Conversational inference, native multi-turn tool calling
+  * POST /api/show    - Model metadata inspection
+  * POST /api/embed   - Semantic embeddings for user memory
+  * GET  /api/ps      - Active model memory status
+- Zero Cloud API Keys: Strict zero-cloud policy. Never require OpenAI, Anthropic, 
+  or external paid API keys.
+- Backend Proxy: The frontend never connects directly to Ollama. All interactions 
+  pass through the authenticated Express backend.
+
+
+3. FULL TECHNOLOGY STACK
+--------------------------------------------------------------------------------
+A. Frontend Layer (Port 5173):
+   - React 19 + TypeScript + Vite 8
+   - Tailwind CSS v4 (Midnight Violet Theme tokens: #0B0F19, #161E2E, #8B5CF6)
+   - Zustand (Global stores: authStore, timerStore, themeStore)
+   - TanStack Query v5 (Server State, auto-caching, selective query invalidation)
+   - Recharts (Custom 6-axis Radar, Waterfall, Stacked Area, Histograms, Multi-bar)
+   - Web Speech API (Native browser speech recognition and natural speech synthesis)
+   - Lucide React Icons
+
+B. Backend API Layer (Port 5000):
+   - Node.js 20+ with Express 4.21 (Native ECMAScript Modules)
+   - JWT (jsonwebtoken) + bcryptjs (10 salt rounds)
+   - Self-Healing Token Middleware (auto-renews near-expiry tokens via x-renewed-token)
+   - 28 Mongoose Controllers & Route Handlers
+   - Continuous Reminder Engine (60s cron) & Daily Analytics Aggregator (midnight cron)
+
+C. Database Persistence Layer (Port 27017):
+   - MongoDB 8.0 with Mongoose 8.9 ODM across 28 specialized collections:
+     * Identity & System: User, AssistantSettings, AssistantMemory, AssistantToolExecution
+     * Goals & Curriculums: Goal, GoalFolder, GoalMilestone, GoalModule, Milestone
+     * Execution & Tasks: Task, Todo, Reminder
+     * Habits & Routines: Habit, HabitCheckIn
+     * Focus & Telemetry: WorkSession, ScreenTimeRecord
+     * Analytics & Lab: DailyAnalytics, DailyJournal, WorkflowExperiment, Achievement,
+       WeeklyReview, MonthlyReview
+
+D. Local AI Layer (Port 11434):
+   - Ollama REST Server running qwen3.5:4b
+   - Domain-Aware Tool Slicing (slices 40+ tools down to context-relevant schemas)
+   - Selective Thinking (enables reasoning chains only for complex planning)
+   - Snapshot Undo Storage & 5-minute Cryptographic Security Token Registry
+
+E. Machine Learning Engine (Port 8000):
+   - Python 3.10+ FastAPI microservice with Uvicorn
+   - Pandas, NumPy, Scikit-learn, SciPy
+   - Algorithms: Isolation Forest, Pearson/Spearman Correlation, Apriori, K-Means
+
+
+4. CORE APPLICATION MODULES & USER EXPERIENCES
+--------------------------------------------------------------------------------
+4.1 Today Execution Center (/today or /)
+- Productivity Metric Strip: Displays Daily Consistency Score (0-100), deep work 
+  hours logged vs. target, completed habits count, and pending tasks countdown.
+- Quick-Capture Bar: Pressing Enter adds scheduled tasks or scratchpad todos 
+  instantly without leaving the view.
+- One-Click Habit Check-In Strip: Horizontal daily habit strip with immediate 
+  check-in and fire streak counter (Flame icon).
+- Priority-Grouped Tasks: Today's tasks categorized by priority (Urgent, High, 
+  Medium, Low) with instant checkbox completion.
+- Instant Focus Launcher: Start the global focus timer directly linked to any 
+  scheduled task with one click.
+
+4.2 My Goals & Curriculum Workspace (/goals, /goals/:id)
+- 4-Level Curriculum Hierarchy:
+  Folders -> Goals -> Milestones -> Modules
+- Folder Organization: Nested folders (e.g. Computer Science, Career, Health). 
+  Deleting a folder safely migrates goals to the root General folder without data loss.
+- Dynamic Pacing Engine:
+  Pacing Gap (%) = ((Elapsed Days / Total Days) * 100) - Achieved Progress (%)
+  * Ahead: Progress exceeds elapsed timeline.
+  * On Pace: Progress matches timeline within +/- 5%.
+  * Mild Deficit: Progress lagging behind schedule (5% < Gap <= 15%).
+  * Critical Deficit: Significant lag (Gap > 15%), triggering automated AI 
+    rescheduling recommendations.
+- Exact Module Generation: Generates an exact count of module slots (e.g. 30 slots 
+  for a 30-day curriculum) and populates curriculum topics without duplicating records.
+- Interactive Roadmap View: Expandable milestone accordions with real-time progress 
+  bars, module checklists, and completion timestamps.
+
+4.3 Task Management Engine (/tasks)
+- Cadence Horizons:
+  * Daily: Tasks scheduled for today or specific calendar dates.
+  * Weekly: Broader deliverables meant to be completed within the current week.
+  * Monthly: High-level milestones and deadlines.
+- Priority Matrix: Color-coded badges for Urgent, High, Medium, and Low.
+- Goal Attribution: Link tasks directly to active goals to automatically attribute 
+  focus time and progress.
+- Automated Overdue Detection: Identifies overdue tasks, displays days overdue, 
+  and offers one-click rescheduling.
+- Quick-Capture Todos (/todos): Scratchpad checklist for immediate thoughts; 
+  converts into scheduled tasks with one click.
+
+4.4 Habits & Adherence Matrix (/habits)
+- 3 Dedicated Views:
+  1. Full Month Adherence Grid (Default): Interactive 28 to 31-day matrix for any 
+     selected month (?month=YYYY-MM). Sticky habit column on the left with horizontal cells.
+  2. Week View: Focused 7-day strip emphasizing immediate momentum.
+  3. Calendar View: Monthly card layout with density heatmaps.
+- Streak Protection & Rest Days: Preserves active streaks on designated rest days 
+  without penalizing the consistency score.
+- Monthly Analytics:
+  Adherence Rate = (Completed Check-ins / Scheduled Days) * 100
+  Tracks active streak and longest all-time streak.
+
+4.5 Global Focus Timer & Deep Work Sessions (/focus)
+- Dual Operating Modes:
+  * Pomodoro Mode: 25/50-minute structured study blocks followed by 5/10-minute rest breaks.
+  * Stopwatch Mode: Open-ended flow state timer with precise millisecond tracking.
+- Persistent Floating Dock: Remains visible across all pages without resetting the 
+  timer when navigating the app.
+- Session Attribution: Logs work duration directly against a specific Goal and Task 
+  upon completion, feeding daily analytics.
+
+4.6 Unified Calendar & Schedule Planner (/calendar)
+- Views: Seamless switching between Day, Week, and Month layouts.
+- Multi-Source Aggregation: Visualizes focus sessions, scheduled tasks, habit 
+  check-ins, and milestone deadlines side by side.
+- Day Detail Modal: Click any date on the calendar to inspect total focus hours, 
+  tasks completed, habits logged, and time distributions.
+
+4.7 Screen Time & Distraction Intelligence (/screen-time)
+- Classification:
+  * Productive: IDEs, terminals, technical documentation, academic portals.
+  * Distracting: Social media, video streaming, non-essential browsing.
+- Distraction Correlation: Quantifies the direct mathematical impact of distracting 
+  screen hours on goal velocity and daily consistency scores.
+
+
+5. ANALYTICS PLATFORM (/analytics)
+--------------------------------------------------------------------------------
+Transforms raw tracking logs into actionable productivity intelligence across 9 views:
+1. Overview: Executive 30-second summary, radar chart covering 6 productivity 
+   dimensions, and daily performance waterfall charts.
+2. Consistency: 7/30/90-day rolling consistency score trends and slump recovery analytics.
+3. Time & Focus: Hourly energy heatmap, deep work vs. shallow work ratios, and 
+   duration distributions.
+4. Goal Progress: Pacing distribution pie charts, velocity tracking, and estimated 
+   completion dates.
+5. Screen Time: Productive vs. distracting screen hour area charts and ratio bars.
+6. Improvement Lab: A/B behavioral experiments (e.g. Morning vs. Evening study) 
+   with statistical hypothesis evaluation.
+7. Monthly Reports: Executive recap cards, qualitative progress reflections, and 
+   month-over-month comparisons.
+8. Advanced Analysis: Correlation matrices, Isolation Forest behavioral slump 
+   detection, and K-Means session clustering.
+9. Chart Suggestions: Interactive taxonomy helping users pick the right visualization 
+   (Comparison, Distribution, Composition, Relationship).
+
+
+6. AUTONOMOUS LOCAL AI AGENT & TOOL EXECUTION ENGINE
+--------------------------------------------------------------------------------
+Accessible through both the dedicated /assistant page and the globally accessible 
+floating voice drawer.
+
+6.1 Agent Architecture & Workflow:
+1. Multilingual Bidirectional Interaction: Full natural speech and text support in 
+   English, Hindi, and Hinglish.
+2. Instant Intent Interceptors: Affirmative confirmations ("yes", "confirm", "haan 
+   proceed karo") and undo commands ("undo", "undo that", "undo karo") execute 
+   immediately with zero LLM inference delay.
+3. Domain-Aware Tool Slicing: Dynamically provides only relevant tool definitions 
+   based on user query intent, preventing context bloat and keeping response 
+   latencies under ~45ms.
+4. Selective Thinking: Enables reasoning chains only for complex planning queries 
+   (e.g., "Create a 60-day syllabus for Java"), keeping routine commands fast.
+5. Interactive Action Cards: Responses render rich UI cards (ActionCard.tsx) with 
+   direct entity navigation and instant undo controls.
+6. Instant Undo & Snapshots: Every mutation creates a snapshot in AssistantToolExecution. 
+   The user can click Undo on any card or say "undo" to revert the change immediately.
+7. High-Risk Confirmation Protocol: Permanent deletions generate a cryptographic 
+   confirmation token (5-minute TTL). Deletions only proceed after an explicit 
+   affirmation ("yes", "confirm", "haan" or button click).
+8. Real-Time UI Updates: Mutations trigger TanStack Query cache invalidations 
+   (['tasks'], ['goals'], ['habits'], ['analytics']), updating every open page 
+   instantly without manual reload.
+
+6.2 Executable Tool Registry (40+ Tools):
+- Tasks:
+  create_task, create_multiple_tasks, update_task, complete_task, reopen_task, 
+  reschedule_task, delete_task, bulk_update_tasks, get_today_tasks, get_overdue_tasks
+- Goals & Folders:
+  create_goal, update_goal, archive_goal, restore_goal, delete_goal (with confirmation), 
+  move_goal, set_primary_goal, create_folder, delete_folder
+- Milestones & Modules:
+  create_milestone, generate_module_slots, populate_module_slots, complete_module, 
+  reopen_module, bulk_complete_modules, get_next_module
+- Habits:
+  create_habit, log_habit_checkin, undo_habit_checkin, pause_habit, resume_habit, 
+  get_habits, get_today_habits
+- Focus & Reminders:
+  start_focus_session, finish_focus_session, create_reminder, snooze_reminder, 
+  get_forgotten_items
+- Memory & Reviews:
+  save_memory, search_memory, get_daily_summary, get_weekly_summary, 
+  get_monthly_summary, undo_last_action, confirm_pending_action
+
+
+7. MATHEMATICAL FORMULATIONS & MACHINE LEARNING
+--------------------------------------------------------------------------------
+7.1 Daily Consistency Score Formula:
+Score = w_h * (H_c / H_t) + w_t * (T_c / T_t) + w_f * min(1, F_m / F_target) - P_distraction
+
+Where:
+- H_c / H_t: Habits completed over scheduled habits (w_h = 40%)
+- T_c / T_t: Tasks completed over scheduled tasks (w_t = 30%)
+- F_m / F_target: Focus minutes logged over daily target (w_f = 30%)
+- P_distraction: Screen distraction penalty (deducts points when distracting screen 
+  time exceeds 2 hours)
+
+7.2 Python ML Service Algorithms:
+- Isolation Forest: Detects unusual behavioral slumps in daily focus and consistency scores.
+- Pearson & Spearman Correlation: Computes relationships between distracting screen 
+  hours and task completion velocity.
+- Apriori Algorithm: Discovers habit stacking patterns (e.g. "Completing LeetCode 
+  in the morning increases 2L Water habit adherence by 82%").
+- K-Means Clustering: Groups work sessions into distinct energy clusters (High Flow, 
+  Moderate Focus, Fragmented).
+
+
+8. BACKGROUND SCHEDULERS & SYSTEM RESILIENCE
+--------------------------------------------------------------------------------
+- Continuous Reminder Engine: Scans every 60 seconds for due reminders and overdue 
+  tasks, delivering prompts with interactive actions: Complete, Still Working, 
+  Snooze 15m, Reschedule, or Skip.
+- Daily Analytics Aggregator: Automatically aggregates daily metrics at midnight 
+  (or on-demand during tool execution) to maintain real-time reporting accuracy.
+- Self-Healing Authentication Middleware: Automatically detects near-expiry JWTs 
+  and re-issues refreshed tokens via the x-renewed-token response header, 
+  preventing mid-session disconnects.
+- Zero Data Lock-in: Full JSON data export available in Settings for complete user ownership.
+================================================================================

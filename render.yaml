@@ -1,0 +1,72 @@
+services:
+  # =========================================================================
+  # 1. Backend API Web Service (Node.js Express)
+  # =========================================================================
+  - type: web
+    name: consistai-backend
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: ML_SERVICE_URL
+        fromService:
+          type: web
+          name: consistai-ml
+          property: host
+      - key: ML_SERVICE_SECRET
+        value: consistai_ml_secure_secret_2026
+      - key: CLIENT_URL
+        fromService:
+          type: web
+          name: consistai-frontend
+          property: host
+
+  # =========================================================================
+  # 2. Frontend Web Application (React Vite Static Site)
+  # =========================================================================
+  - type: web
+    name: consistai-frontend
+    runtime: static
+    plan: free
+    region: oregon
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: consistai-backend
+          property: host
+
+  # =========================================================================
+  # 3. Machine Learning Analytics Engine (Python FastAPI)
+  # =========================================================================
+  - type: web
+    name: consistai-ml
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: ML_SERVICE_SECRET
+        value: consistai_ml_secure_secret_2026
