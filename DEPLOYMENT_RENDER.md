@@ -115,7 +115,7 @@ If you prefer configuring each service manually on Render:
 - **Type**: Static Site
 - **Name**: `consistai-frontend`
 - **Root Directory**: `frontend`
-- **Build Command**: `npm install && npm run build`
+- **Build Command**: `npm install --include=dev && npm run build`
 - **Publish Directory**: `dist`
 - **Redirects / Rewrites**:
   - `/*` -> `/index.html` (Rewrite)
