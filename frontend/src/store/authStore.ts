@@ -2,6 +2,16 @@ import { create } from 'zustand';
 import { api } from '../api/client';
 import { User } from '../types';
 
+export const DEMO_PREVIEW_USER: User = {
+  _id: 'guest_user_demo_001',
+  name: 'Alok Singh (Preview Mode)',
+  email: 'singhalok1700@gmail.com',
+  role: 'student',
+  avatar: '',
+  timezone: 'Asia/Kolkata',
+  createdAt: new Date().toISOString()
+};
+
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
@@ -17,9 +27,9 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
+  user: DEMO_PREVIEW_USER,
+  isAuthenticated: true,
+  isLoading: false,
   error: null,
 
   updateUser: (user: User) => set({ user }),
@@ -67,11 +77,12 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       set({ user: res.data.user, isAuthenticated: true, isLoading: false });
     } catch (err: any) {
+      // In offline / preview mode, keep the rich demo user
       set({
-        error: err.response?.data?.message || 'Demo login failed.',
+        user: DEMO_PREVIEW_USER,
+        isAuthenticated: true,
         isLoading: false
       });
-      throw err;
     }
   },
 
@@ -82,13 +93,14 @@ export const useAuthStore = create<AuthState>((set) => ({
       // ignore
     }
     localStorage.removeItem('consistai_token');
-    set({ user: null, isAuthenticated: false, error: null });
+    set({ user: DEMO_PREVIEW_USER, isAuthenticated: true, error: null });
   },
 
   checkAuth: async () => {
     const token = localStorage.getItem('consistai_token');
     if (!token || token === 'none' || token === 'null') {
-      set({ user: null, isAuthenticated: false, isLoading: false });
+      // Default to guest preview user so the frontend is immediately accessible without login
+      set({ user: DEMO_PREVIEW_USER, isAuthenticated: true, isLoading: false });
       return;
     }
     try {
@@ -98,8 +110,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       set({ user: res.data.user, isAuthenticated: true, isLoading: false });
     } catch (err) {
-      localStorage.removeItem('consistai_token');
-      set({ user: null, isAuthenticated: false, isLoading: false });
+      // If backend is unavailable or token expired, keep preview user active
+      set({ user: DEMO_PREVIEW_USER, isAuthenticated: true, isLoading: false });
     }
   },
 
