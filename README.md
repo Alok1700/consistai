@@ -1,11 +1,13 @@
-# ConsistAI ML
-## Intelligent Goal Progress Analysis and Workflow Improvement System
+# ConsistAI
+## Autonomous AI-Powered Goal Execution & Retrospective Behavioral Analytics System
 ### B.Tech Computer Science and Engineering — Minor Project
 
-![ConsistAI ML Architecture](https://img.shields.io/badge/System-ConsistAI%20ML-indigo?style=for-the-badge)
-![MERN Stack](https://img.shields.io/badge/Stack-React%20%7C%20Node%20%7C%20Mongo-emerald?style=for-the-badge)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Alok1700/consistai)
+
+![ConsistAI Architecture](https://img.shields.io/badge/System-ConsistAI-indigo?style=for-the-badge)
+![MERN Stack](https://img.shields.io/badge/Stack-React%2019%20%7C%20Node%20%7C%20MongoDB-emerald?style=for-the-badge)
 ![Python FastAPI ML](https://img.shields.io/badge/ML%20Microservice-FastAPI%20%7C%20Scikit--Learn-cyan?style=for-the-badge)
-![Google Gemini AI](https://img.shields.io/badge/AI%20Engine-Gemini%20Flash%20%7C%20Deterministic%20Fallback-violet?style=for-the-badge)
+![Local AI](https://img.shields.io/badge/AI%20Assistant-Ollama%20%7C%20Qwen%203.5-violet?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)
 
 ---
